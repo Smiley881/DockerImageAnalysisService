@@ -28,6 +28,11 @@ func BaseHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	if errors.Is(err, services.ErrNotFound) {
+		log.Printf("%s %s - 404 Not Found: %s", r.Method, r.URL.Path, err.Error())
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
 
 	resultByte, err := json.Marshal(&resultStruct)
 	if err != nil {
