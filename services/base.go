@@ -1,54 +1,97 @@
 package services
 
 import (
-	"encoding/json"
-	"errors"
 	"io"
+	"strings"
 )
 
-var (
-	ErrInvalidfFormat = errors.New(`invalidfFormat: Поля "repository" и "name" являются обязательными`)
-	ErrNotFound       = errors.New("not found: Образ не найден")
-)
+/* Возвращение сборки на linux/amd64 */
+func getManifestLinuxAmd64(manifests *Manifests) (string, error) {
+	var digest string
 
-type Input struct {
-	Repository string `json:"repository"`
-	Name       string `json:"name"`
-	Tag        string `json:"tag"`
+	for i := range manifests.Manifests {
+		if manifests.Manifests[i].Platform.Architecture == "amd64" && manifests.Manifests[i].Platform.Os == "linux" {
+			digest = manifests.Manifests[i].Digest
+			break
+		}
+	}
+
+	if digest == "" {
+		return "", ErrNotFound
+	}
+	return digest, nil
 }
 
-func parseJsonInputToStruct(inputJson io.Reader) (Input, error) {
+/* Возвращение списка сборок в виде структуры */
+func GetImageManifests(input io.ReadCloser, inputStruct Input) (Manifests, error) {
+
+	var manifests Manifests
+
+	manifestList, err := getListManifests(inputStruct)
+	if err != nil {
+		return manifests, err
+	}
+
+	err = parseJsonToStruct_Manifests(strings.NewReader(manifestList), &manifests)
+	if err != nil {
+		return manifests, err
+	}
+
+	return manifests, nil
+}
+
+/* Возвращение определенной сборки в виде структуры */
+func GetImageBlob(digest string, inputStruct Input) (Blob, error) {
+
+	var blob Blob
+	blobString, err := getBlob(&inputStruct, digest)
+	if err != nil {
+		return blob, err
+	}
+
+	err = parseJsonToStruct_Blob(strings.NewReader(blobString), &blob)
+	if err != nil {
+		return blob, err
+	}
+
+	return blob, nil
+}
+
+type BaseResult struct {
+	LayersCount int `json:"layers_count"`
+	TotalSize   int `json:"total_size"`
+}
+
+/* Возвращает сводную информацию об образе (количество слоев и общий вес)  */
+func ImageDownloadSize(input io.ReadCloser) (BaseResult, error) {
+
+	var result BaseResult
 	var inputStruct Input
-
-	decoder := json.NewDecoder(inputJson)
-	err := decoder.Decode(&inputStruct)
+	err := parseJsonToStruct_Input(input, &inputStruct)
 	if err != nil {
-		return inputStruct, err
+		return result, err
 	}
 
-	if inputStruct.Name == "" || inputStruct.Repository == "" {
-		return inputStruct, ErrInvalidfFormat
-	}
-
-	if inputStruct.Tag == "" {
-		inputStruct.Tag = "latest"
-	}
-
-	return inputStruct, nil
-}
-
-func ImageDownloadSize(input io.ReadCloser) (string, error) {
-
-	inputStruct, err := parseJsonInputToStruct(input)
+	manifests, err := GetImageManifests(input, inputStruct)
 	if err != nil {
-		return "", err
+		return result, err
 	}
 
-	inputByte, err := json.Marshal(&inputStruct)
+	digest, err := getManifestLinuxAmd64(&manifests)
 	if err != nil {
-		return "", err
+		return result, err
 	}
-	// req := bytes.NewReader(inputByte)
 
-	return string(inputByte), nil
+	blob, err := GetImageBlob(digest, inputStruct)
+	if err != nil {
+		return result, err
+	}
+
+	result.LayersCount = len(blob.Layers)
+
+	for i := range result.LayersCount {
+		result.TotalSize += blob.Layers[i].Size
+	}
+
+	return result, nil
 }

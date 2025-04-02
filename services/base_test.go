@@ -1,58 +1,36 @@
 package services
 
 import (
-	"strings"
+	"os"
+	"path/filepath"
 	"testing"
 )
 
-func TestParseJsonInputToStruct_WithTag(t *testing.T) {
+func TestGetManifestLinuxAmd64(t *testing.T) {
 
 	// Array
-	input := strings.NewReader(`{"repository":"dockerhub.timeweb.cloud","name":"python","tag":"slim"}`)
-	expectedResult := Input{
-		Repository: "dockerhub.timeweb.cloud",
-		Name:       "python",
-		Tag:        "slim",
+	input, err := os.Open(filepath.Join("..", "resources", "tests", "expected_result_with_tag.json"))
+	if err != nil {
+		t.Fatalf("Произошла системная ошибка: %v", err)
 	}
 
+	var manifests Manifests
+	err = parseJsonToStruct_Manifests(input, &manifests)
+	if err != nil {
+		t.Fatalf("Произошла системная ошибка: %v", err)
+	}
+
+	expectedResult := "sha256:0cea405c3ace86f4480c2986d942fc8258cae70c5ffb1fd70143cb5ba54a208c"
+
 	// Act
-	result, err := parseJsonInputToStruct(input)
+	result, err := getManifestLinuxAmd64(&manifests)
 
 	// Assert
 	if err != nil {
-		t.Errorf("Произошла ошибка: %v\n", err)
+		t.Errorf("Произошла ошибка: %v", err)
 	}
 
-	if result.Name != expectedResult.Name || result.Repository != expectedResult.Repository || result.Tag != expectedResult.Tag {
-		t.Errorf(
-			"Получен неверный результат:\nActual:\n- Repository: %s\n- Name: %s\n- Tag: %s\nExpected:\n- Repository: %s\n- Name: %s\n- Tag: %s",
-			result.Repository, result.Name, result.Tag, expectedResult.Repository, expectedResult.Name, expectedResult.Tag,
-		)
-	}
-}
-
-func TestParseJsonInputToStruct_WithoutTag(t *testing.T) {
-
-	// Array
-	input := strings.NewReader(`{"repository":"dockerhub.timeweb.cloud","name":"python"}`)
-	expectedResult := Input{
-		Repository: "dockerhub.timeweb.cloud",
-		Name:       "python",
-		Tag:        "latest",
-	}
-
-	// Act
-	result, err := parseJsonInputToStruct(input)
-
-	// Assert
-	if err != nil {
-		t.Errorf("Произошла ошибка: %v\n", err)
-	}
-
-	if result.Name != expectedResult.Name || result.Repository != expectedResult.Repository || result.Tag != expectedResult.Tag {
-		t.Errorf(
-			"Получен неверный результат:\nActual:\n- Repository: %s\n- Name: %s\n- Tag: %s\nExpected:\n- Repository: %s\n- Name: %s\n- Tag: %s",
-			result.Repository, result.Name, result.Tag, expectedResult.Repository, expectedResult.Name, expectedResult.Tag,
-		)
+	if result != expectedResult {
+		t.Errorf("Ожидалось - %s, а получено - %s", expectedResult, result)
 	}
 }
