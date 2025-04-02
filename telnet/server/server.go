@@ -17,7 +17,7 @@ func Start(address string) {
 	defer cancel()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /api/v1/image-download-size", hndlr.BaseHandler)
+	mux.HandleFunc("/api/v1/image-download-size", hndlr.BaseHandler)
 	mux.HandleFunc("/", hndlr.NotFoundUrl)
 
 	server := http.Server{

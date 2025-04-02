@@ -10,6 +10,12 @@ import (
 
 func BaseHandler(w http.ResponseWriter, r *http.Request) {
 
+	if r.Method != "POST" {
+		log.Printf("%s %s - 405 Method Not Allowed: %s", r.Method, r.URL.Path, "Недопустимый метод запроса")
+		http.Error(w, "Недопустимый метод запроса", http.StatusMethodNotAllowed)
+		return
+	}
+
 	if r.Header.Get("Content-Type") != "application/json" {
 		log.Printf("%s %s - 400 Bad Request: %s", r.Method, r.URL.Path, "Недопустимый запрос: Ожидается формат JSON")
 		http.Error(w, "Ожидается формат JSON", http.StatusBadRequest)
