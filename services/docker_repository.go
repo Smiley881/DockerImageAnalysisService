@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 )
@@ -17,7 +16,6 @@ type Manifests struct {
 /* Получение списка манифестов */
 func getImageManifests(input Input) (string, error) {
 	baseUrl := "https://" + input.Repository + "/v2/" + input.Name + "/manifests/" + input.Tag
-	fmt.Println(baseUrl)
 
 	req, err := http.NewRequest("GET", baseUrl, nil)
 	if err != nil {
@@ -40,6 +38,23 @@ func getImageManifests(input Input) (string, error) {
 }
 
 /* Получение информации об одном из манифестов */
-func getImageBlobs(manifests Manifest) {
+func getImageBlobs(input *Input, digest string) ([]byte, error) {
+	baseUrl := "https://" + input.Repository + "/v2/" + input.Name + "/blobs/" + digest
 
+	req, err := http.NewRequest("GET", baseUrl, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if resp.StatusCode == 404 {
+		return nil, ErrNotFound
+	}
+	defer resp.Body.Close()
+
+	result, errRead := io.ReadAll(resp.Body)
+	if errRead != nil {
+		return nil, errRead
+	}
+	return result, err
 }
