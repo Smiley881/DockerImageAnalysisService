@@ -6,7 +6,10 @@ import (
 	"io"
 )
 
-var ErrInvalidfFormat = errors.New(`invalidfFormat: Поля "repository" и "name" являются обязательными`)
+var (
+	ErrInvalidfFormatInput = errors.New(`Поля "repository" и "name" являются обязательными`)
+	ErrInvalidFormatJson   = errors.New(`Неверный формат json`)
+)
 
 type Input struct {
 	Repository string `json:"repository"`
@@ -20,11 +23,11 @@ func parseJsonToStruct_Input(inputJson io.Reader, inputStruct *Input) error {
 	decoder := json.NewDecoder(inputJson)
 	err := decoder.Decode(&inputStruct)
 	if err != nil {
-		return err
+		return ErrInvalidFormatJson
 	}
 
 	if inputStruct.Name == "" || inputStruct.Repository == "" {
-		return ErrInvalidfFormat
+		return ErrInvalidfFormatInput
 	}
 
 	if inputStruct.Tag == "" {

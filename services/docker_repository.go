@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-var ErrNotFound = errors.New("not found: Образ не найден")
+var ErrNotFound = errors.New("Образ не найден")
 
 /* Получение списка сборок */
 func getListManifests(input Input) (string, error) {
