@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"net/http"
 )
 
 var (
-	ErrInvalidfFormat = errors.New(`InvalidfFormat: Поля "repository" и "name" являются обязательными`)
-	ErrNotFound       = errors.New("Not found: Образ не найден")
+	ErrInvalidfFormat = errors.New(`invalidfFormat: Поля "repository" и "name" являются обязательными`)
+	ErrNotFound       = errors.New("not found: Образ не найден")
 )
 
 type Input struct {
@@ -18,44 +17,31 @@ type Input struct {
 	Tag        string `json:"tag"`
 }
 
-func getImageMainfests(input Input) (string, error) {
-	baseUrl := "https://" + input.Repository + "/v2/" + input.Name + "manifests" + input.Tag
-
-	req, err := http.NewRequest("GET", baseUrl, nil)
-	if err != nil {
-		return "", err
-	}
-	req.Header.Add("Accept", "application/vnd.oci.image.manifest.v1+json")
-	req.Header.Add("Accept", "application/vnd.oci.image.index.v1+json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if resp.StatusCode == 404 {
-		return "", ErrNotFound
-	} else {
-		result, errRead := io.ReadAll(req.Body)
-		if errRead != nil {
-			return "", errRead
-		}
-		return string(result), err
-	}
-
-}
-
-func ImageDownloadSize(input io.ReadCloser) (string, error) {
-
+func parseJsonInputToStruct(inputJson io.Reader) (Input, error) {
 	var inputStruct Input
-	decoder := json.NewDecoder(input)
+
+	decoder := json.NewDecoder(inputJson)
 	err := decoder.Decode(&inputStruct)
 	if err != nil {
-		return "", err
+		return inputStruct, err
 	}
 
 	if inputStruct.Name == "" || inputStruct.Repository == "" {
-		return "", ErrInvalidfFormat
+		return inputStruct, ErrInvalidfFormat
 	}
 
 	if inputStruct.Tag == "" {
 		inputStruct.Tag = "latest"
+	}
+
+	return inputStruct, nil
+}
+
+func ImageDownloadSize(input io.ReadCloser) (string, error) {
+
+	inputStruct, err := parseJsonInputToStruct(input)
+	if err != nil {
+		return "", err
 	}
 
 	inputByte, err := json.Marshal(&inputStruct)
