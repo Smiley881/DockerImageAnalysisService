@@ -52,7 +52,7 @@ type Manifests struct {
 }
 
 /* Превращает строку JSON в структуру Manifests */
-func parseJsonToStruct_Mainfests(inputJson io.Reader) (Manifests, error) {
+func parseJsonToStruct_Manifests(inputJson io.Reader) (Manifests, error) {
 	var manifests Manifests
 
 	decoder := json.NewDecoder(inputJson)
