@@ -8,6 +8,7 @@ import (
 func TestParseJsonInputToStruct_WithTag(t *testing.T) {
 
 	// Array
+	var result Input
 	input := strings.NewReader(`{"repository":"dockerhub.timeweb.cloud","name":"python","tag":"slim"}`)
 	expectedResult := Input{
 		Repository: "dockerhub.timeweb.cloud",
@@ -16,7 +17,7 @@ func TestParseJsonInputToStruct_WithTag(t *testing.T) {
 	}
 
 	// Act
-	result, err := parseJsonToStruct_Input(input)
+	err := parseJsonToStruct_Input(input, &result)
 
 	// Assert
 	if err != nil {
@@ -34,6 +35,7 @@ func TestParseJsonInputToStruct_WithTag(t *testing.T) {
 func TestParseJsonInputToStruct_WithoutTag(t *testing.T) {
 
 	// Array
+	var result Input
 	input := strings.NewReader(`{"repository":"dockerhub.timeweb.cloud","name":"python"}`)
 	expectedResult := Input{
 		Repository: "dockerhub.timeweb.cloud",
@@ -42,7 +44,7 @@ func TestParseJsonInputToStruct_WithoutTag(t *testing.T) {
 	}
 
 	// Act
-	result, err := parseJsonToStruct_Input(input)
+	err := parseJsonToStruct_Input(input, &result)
 
 	// Assert
 	if err != nil {

@@ -15,24 +15,23 @@ type Input struct {
 }
 
 /* Превращает строку JSON в структуру Input */
-func parseJsonToStruct_Input(inputJson io.Reader) (Input, error) {
-	var inputStruct Input
+func parseJsonToStruct_Input(inputJson io.Reader, inputStruct *Input) error {
 
 	decoder := json.NewDecoder(inputJson)
 	err := decoder.Decode(&inputStruct)
 	if err != nil {
-		return inputStruct, err
+		return err
 	}
 
 	if inputStruct.Name == "" || inputStruct.Repository == "" {
-		return inputStruct, ErrInvalidfFormat
+		return ErrInvalidfFormat
 	}
 
 	if inputStruct.Tag == "" {
 		inputStruct.Tag = "latest"
 	}
 
-	return inputStruct, nil
+	return nil
 }
 
 // ============================================================ //
@@ -52,15 +51,14 @@ type Manifests struct {
 }
 
 /* Превращает строку JSON в структуру Manifests */
-func parseJsonToStruct_Manifests(inputJson io.Reader) (Manifests, error) {
-	var manifests Manifests
+func parseJsonToStruct_Manifests(inputJson io.Reader, manifests *Manifests) error {
 
 	decoder := json.NewDecoder(inputJson)
 	err := decoder.Decode(&manifests)
 	if err != nil {
-		return manifests, err
+		return err
 	}
-	return manifests, nil
+	return nil
 }
 
 // ============================================================ //
@@ -74,13 +72,12 @@ type Blob struct {
 }
 
 /* Превращает строку JSON в структуру Blob */
-func parseJsonToStruct_Blob(inputJson io.Reader) (Blob, error) {
-	var blob Blob
+func parseJsonToStruct_Blob(inputJson io.Reader, blob Blob) error {
 
 	decoder := json.NewDecoder(inputJson)
 	err := decoder.Decode(&blob)
 	if err != nil {
-		return blob, err
+		return err
 	}
-	return blob, nil
+	return nil
 }
