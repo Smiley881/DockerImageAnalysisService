@@ -5,14 +5,6 @@ import (
 	"net/http"
 )
 
-type Manifest struct {
-	Digest string `json:"digest"`
-}
-
-type Manifests struct {
-	Manifests []Manifest `json:"manifests"`
-}
-
 /* Получение списка манифестов */
 func getImageManifests(input Input) (string, error) {
 	baseUrl := "https://" + input.Repository + "/v2/" + input.Name + "/manifests/" + input.Tag
@@ -28,7 +20,6 @@ func getImageManifests(input Input) (string, error) {
 	if resp.StatusCode == 404 {
 		return "", ErrNotFound
 	}
-	defer resp.Body.Close()
 
 	result, errRead := io.ReadAll(resp.Body)
 	if errRead != nil {
