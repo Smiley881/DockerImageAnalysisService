@@ -1,12 +1,15 @@
 package services
 
 import (
+	"errors"
 	"io"
 	"net/http"
 )
 
-/* Получение списка манифестов */
-func getImageManifests(input Input) (string, error) {
+var ErrNotFound = errors.New("not found: Образ не найден")
+
+/* Получение списка сборок */
+func getListManifests(input Input) (string, error) {
 	baseUrl := "https://" + input.Repository + "/v2/" + input.Name + "/manifests/" + input.Tag
 
 	req, err := http.NewRequest("GET", baseUrl, nil)
@@ -20,6 +23,7 @@ func getImageManifests(input Input) (string, error) {
 	if resp.StatusCode == 404 {
 		return "", ErrNotFound
 	}
+	defer resp.Body.Close()
 
 	result, errRead := io.ReadAll(resp.Body)
 	if errRead != nil {
@@ -29,23 +33,23 @@ func getImageManifests(input Input) (string, error) {
 }
 
 /* Получение информации об одном из манифестов */
-func getImageBlobs(input *Input, digest string) ([]byte, error) {
+func getBlob(input *Input, digest string) (string, error) {
 	baseUrl := "https://" + input.Repository + "/v2/" + input.Name + "/blobs/" + digest
 
 	req, err := http.NewRequest("GET", baseUrl, nil)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	resp, err := http.DefaultClient.Do(req)
 	if resp.StatusCode == 404 {
-		return nil, ErrNotFound
+		return "", ErrNotFound
 	}
 	defer resp.Body.Close()
 
 	result, errRead := io.ReadAll(resp.Body)
 	if errRead != nil {
-		return nil, errRead
+		return "", errRead
 	}
-	return result, err
+	return string(result), err
 }

@@ -28,7 +28,7 @@ func TestGetManifests_WithTag(t *testing.T) {
 	}
 
 	// Act
-	result, err := getImageManifests(input)
+	result, err := getListManifests(input)
 
 	// Assert
 	if err != nil {
@@ -58,7 +58,7 @@ func TestGetManifests_WithoutTag(t *testing.T) {
 	}
 
 	// Act
-	result, err := getImageManifests(input)
+	result, err := getListManifests(input)
 
 	// Assert
 	if err != nil {
@@ -81,7 +81,7 @@ func TestGetManifests_IncorrectName(t *testing.T) {
 	}
 
 	// Act
-	result, err := getImageManifests(input)
+	result, err := getListManifests(input)
 
 	// Assert
 	if result != "" {
@@ -103,7 +103,7 @@ func TestGetManifests_IncorrectTag(t *testing.T) {
 	}
 
 	// Act
-	result, err := getImageManifests(input)
+	result, err := getListManifests(input)
 
 	// Assert
 	if result != "" {
@@ -154,8 +154,8 @@ func TestGetBlobs_Correct(t *testing.T) {
 	}
 
 	// Act
-	result, err := getImageBlobs(&input, digest)
-	errConfig := json.Unmarshal(result, &resultBlob)
+	result, err := getBlob(&input, digest)
+	errConfig := json.Unmarshal([]byte(result), &resultBlob)
 
 	// Assert
 	if errConfig != nil {
