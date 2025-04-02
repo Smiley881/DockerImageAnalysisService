@@ -36,18 +36,18 @@ func parseJsonToStruct_Input(inputJson io.Reader, inputStruct *Input) error {
 
 // ============================================================ //
 
-type platform struct {
+type Platform struct {
 	Architecture string `json:"architecture"`
 	Os           string `json:"os"`
 }
 
-type manifest struct {
+type Manifest struct {
 	Digest   string   `json:"digest"`
-	Platform platform `json:"platoform"`
+	Platform Platform `json:"platform"`
 }
 
 type Manifests struct {
-	Manifests []manifest `json:"manifests"`
+	Manifests []Manifest `json:"manifests"`
 }
 
 /* Превращает строку JSON в структуру Manifests */
@@ -63,16 +63,16 @@ func parseJsonToStruct_Manifests(inputJson io.Reader, manifests *Manifests) erro
 
 // ============================================================ //
 
-type layer struct {
+type Layer struct {
 	Size int `json:"size"`
 }
 
 type Blob struct {
-	Layers []layer `json:"layers"`
+	Layers []Layer `json:"layers"`
 }
 
 /* Превращает строку JSON в структуру Blob */
-func parseJsonToStruct_Blob(inputJson io.Reader, blob Blob) error {
+func parseJsonToStruct_Blob(inputJson io.Reader, blob *Blob) error {
 
 	decoder := json.NewDecoder(inputJson)
 	err := decoder.Decode(&blob)
