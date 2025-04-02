@@ -1,0 +1,41 @@
+{
+    "schemaVersion": 2,
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "config": {
+      "mediaType": "application/vnd.oci.image.config.v1+json",
+      "digest": "sha256:c29437c856a5551f89bab8655e99ebade62c2860e6da50152f7fa5a5f3ab7d52",
+      "size": 5368
+    },
+    "layers": [
+      {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:6e909acdb790c5a1989d9cfc795fda5a246ad6664bb27b5c688e2b734b2c5fad",
+        "size": 28204865
+      },
+      {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:a6f2701f375f1349521c5cd3f3092e89f8f9f83cb505a876a65609ec30705c4e",
+        "size": 3511511
+      },
+      {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:7a729f9c58731e7f30ff938220a70a4061af927ccda4468c8717001cb7db89c4",
+        "size": 12582814
+      },
+      {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:75c77ac11059535a2a5409b794c1bec09cac945ffe1dfd92215c68f2ed2d35d4",
+        "size": 249
+      }
+    ],
+    "annotations": {
+      "com.docker.official-images.bashbrew.arch": "amd64",
+      "org.opencontainers.image.base.digest": "sha256:e9ac68ffde903b241342267a51cd74c5417414af652cb2e380c6ddcf522589bc",
+      "org.opencontainers.image.base.name": "debian:bookworm-slim",
+      "org.opencontainers.image.created": "2025-02-04T23:51:20Z",
+      "org.opencontainers.image.revision": "0330f0baedb296c8806a869d04fe76838f721647",
+      "org.opencontainers.image.source": "https://github.com/docker-library/python.git#0330f0baedb296c8806a869d04fe76838f721647:3.13/slim-bookworm",
+      "org.opencontainers.image.url": "https://hub.docker.com/_/python",
+      "org.opencontainers.image.version": "3.13.2-slim-bookworm"
+    }
+  }
