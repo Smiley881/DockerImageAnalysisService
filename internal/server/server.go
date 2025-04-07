@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -40,7 +41,7 @@ func Start(address string) {
 	log.Printf("Сервер запущен. Адрес: %s. PID: %d\n", address, os.Getppid())
 	go func() {
 		err := server.ListenAndServe()
-		if err != nil && err != http.ErrServerClosed {
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Printf("Error: %v\n", err)
 		}
 	}()
