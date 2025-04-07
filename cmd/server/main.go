@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"os"
-	"project8/telnet/server"
+	"project8/internal/server"
 )
 
 func main() {

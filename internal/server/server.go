@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"project8/telnet/hndlr"
+	"project8/internal/hndlr"
 	"syscall"
 	"time"
 )
