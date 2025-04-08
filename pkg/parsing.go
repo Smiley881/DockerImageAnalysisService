@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	ErrInvalidfFormatInput = errors.New(`Поля "repository" и "name" являются обязательными`)
-	ErrInvalidFormatJson   = errors.New(`Неверный формат json`)
+	ErrInvalidfFormatInput = errors.New(`поля "repository" и "name" являются обязательными`)
+	ErrInvalidFormatJson   = errors.New(`неверный формат json`)
 )
 
 type Input struct {

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var ErrNotFound = errors.New("Образ не найден")
+var ErrNotFound = errors.New("образ не найден")
 
 /* Получение списка сборок */
 func getListManifests(input Input) (string, error) {
