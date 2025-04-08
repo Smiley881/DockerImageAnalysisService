@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"time"
 )
 
 var ErrNotFound = errors.New("Образ не найден")
@@ -19,7 +20,10 @@ func getListManifests(input Input) (string, error) {
 	req.Header.Add("Accept", "application/vnd.oci.image.manifest.v1+json")
 	req.Header.Add("Accept", "application/vnd.oci.image.index.v1+json")
 
-	resp, err := http.DefaultClient.Do(req)
+	client := http.Client{
+		Timeout: 4 * time.Second,
+	}
+	resp, err := client.Do(req)
 	if resp.StatusCode == 404 {
 		return "", ErrNotFound
 	}
@@ -41,7 +45,10 @@ func getBlob(input *Input, digest string) (string, error) {
 		return "", err
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	client := http.Client{
+		Timeout: 4 * time.Second,
+	}
+	resp, err := client.Do(req)
 	if resp.StatusCode == 404 {
 		return "", ErrNotFound
 	}
