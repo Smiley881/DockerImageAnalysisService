@@ -31,11 +31,11 @@ func Start(address string) {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v1/image-download-size", hndlr.BaseHandler)
-	mux.HandleFunc("/", hndlr.NotFoundUrl)
+	loggedMux := hndlr.BaseMiddleware(mux)
 
 	server := http.Server{
 		Addr:    address,
-		Handler: mux,
+		Handler: loggedMux,
 	}
 
 	log.Printf("Сервер запущен. Адрес: %s. PID: %d\n", address, os.Getppid())

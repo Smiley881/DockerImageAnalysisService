@@ -8,9 +8,38 @@ import (
 	services "project8/pkg"
 )
 
+type loggingResponseWriter struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func NewLoggingResponseWriter(w http.ResponseWriter) *loggingResponseWriter {
+	return &loggingResponseWriter{w, http.StatusOK}
+}
+
+func (lrw *loggingResponseWriter) WriteHeader(code int) {
+	lrw.statusCode = code
+	lrw.ResponseWriter.WriteHeader(code)
+}
+
+func BaseMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		w.Header().Set("Content-Type", "application/json")
+		lrw := NewLoggingResponseWriter(w)
+		next.ServeHTTP(lrw, r)
+		statusCode := lrw.statusCode
+		if statusCode == http.StatusNotFound && r.URL.Path != "/api/v1/image-download-size" {
+			log.Printf("%s %s - 404 Not Found: Страница не существует", r.Method, r.URL.Path)
+		} else if statusCode == http.StatusOK {
+			log.Printf("%s %s - 200 OK", r.Method, r.URL.Path)
+		}
+	})
+}
+
 func BaseHandler(w http.ResponseWriter, r *http.Request) {
 
-	if r.Method != "POST" {
+	if r.Method != http.MethodPost {
 		log.Printf("%s %s - 405 Method Not Allowed: %s", r.Method, r.URL.Path, "Недопустимый метод запроса")
 		http.Error(w, "Недопустимый метод запроса", http.StatusMethodNotAllowed)
 		return
@@ -37,16 +66,10 @@ func BaseHandler(w http.ResponseWriter, r *http.Request) {
 	resultByte, err := json.Marshal(&resultStruct)
 	if err != nil {
 		log.Printf("%s %s - 500 Internal Server Error: %s", r.Method, r.URL.Path, err.Error())
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Ошибка при выполнении запроса", http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	w.Write(resultByte)
-	log.Printf("%s %s - 200 OK", r.Method, r.URL.Path)
-}
 
-func NotFoundUrl(w http.ResponseWriter, r *http.Request) {
-	log.Printf("%s %s - 404 Not Found: %s", r.Method, r.URL.Path, "Введенный URL не существует")
-	http.Error(w, "Введенный URL не существует", http.StatusNotFound)
 }
