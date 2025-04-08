@@ -32,7 +32,7 @@ func GetImageManifests(input io.ReadCloser, inputStruct Input) (Manifests, error
 		return manifests, err
 	}
 
-	err = parseJsonToStruct_Manifests(strings.NewReader(manifestList), &manifests)
+	err = parseJsonToStructManifests(strings.NewReader(manifestList), &manifests)
 	if err != nil {
 		return manifests, err
 	}
@@ -49,7 +49,7 @@ func GetImageBlob(digest string, inputStruct Input) (Blob, error) {
 		return blob, err
 	}
 
-	err = parseJsonToStruct_Blob(strings.NewReader(blobString), &blob)
+	err = parseJsonToStructBlob(strings.NewReader(blobString), &blob)
 	if err != nil {
 		return blob, err
 	}
@@ -67,7 +67,7 @@ func ImageDownloadSize(input io.ReadCloser) (BaseResult, error) {
 
 	var result BaseResult
 	var inputStruct Input
-	err := parseJsonToStruct_Input(input, &inputStruct)
+	err := parseJsonToStructInput(input, &inputStruct)
 	if err != nil {
 		return result, err
 	}

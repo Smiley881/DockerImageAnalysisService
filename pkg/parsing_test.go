@@ -17,7 +17,7 @@ func TestParseJsonToStruct_Input_WithTag(t *testing.T) {
 	}
 
 	// Act
-	err := parseJsonToStruct_Input(input, &result)
+	err := parseJsonToStructInput(input, &result)
 
 	// Assert
 	if err != nil {
@@ -57,7 +57,7 @@ func TestParseJsonToStruct_Manifests(t *testing.T) {
 	}
 
 	// Act
-	err := parseJsonToStruct_Manifests(input, &result)
+	err := parseJsonToStructManifests(input, &result)
 
 	// Assert
 	if err != nil {
@@ -86,7 +86,7 @@ func TestParseJsonToStruct_Blob(t *testing.T) {
 	}
 
 	// Act
-	err := parseJsonToStruct_Blob(input, &result)
+	err := parseJsonToStructBlob(input, &result)
 
 	// Assert
 	if err != nil {

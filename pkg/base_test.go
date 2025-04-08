@@ -15,7 +15,7 @@ func TestGetManifestLinuxAmd64(t *testing.T) {
 	}
 
 	var manifests Manifests
-	err = parseJsonToStruct_Manifests(input, &manifests)
+	err = parseJsonToStructManifests(input, &manifests)
 	if err != nil {
 		t.Fatalf("Произошла системная ошибка: %v", err)
 	}

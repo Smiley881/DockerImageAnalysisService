@@ -18,7 +18,7 @@ type Input struct {
 }
 
 /* Превращает строку JSON в структуру Input */
-func parseJsonToStruct_Input(inputJson io.Reader, inputStruct *Input) error {
+func parseJsonToStructInput(inputJson io.Reader, inputStruct *Input) error {
 
 	decoder := json.NewDecoder(inputJson)
 	err := decoder.Decode(&inputStruct)
@@ -54,7 +54,7 @@ type Manifests struct {
 }
 
 /* Превращает строку JSON в структуру Manifests */
-func parseJsonToStruct_Manifests(inputJson io.Reader, manifests *Manifests) error {
+func parseJsonToStructManifests(inputJson io.Reader, manifests *Manifests) error {
 
 	decoder := json.NewDecoder(inputJson)
 	err := decoder.Decode(&manifests)
@@ -75,7 +75,7 @@ type Blob struct {
 }
 
 /* Превращает строку JSON в структуру Blob */
-func parseJsonToStruct_Blob(inputJson io.Reader, blob *Blob) error {
+func parseJsonToStructBlob(inputJson io.Reader, blob *Blob) error {
 
 	decoder := json.NewDecoder(inputJson)
 	err := decoder.Decode(&blob)
