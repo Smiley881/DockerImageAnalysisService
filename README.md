@@ -1,3 +1,6 @@
-# Проект: сервис по анализу образов Docker
+# Project: Docker Image Analysis Service
 
-Актуальный текст задания - [по этой ссылке](https://git.culab.ru/bsc-development-basics-2nd-semester/dev-basics-2025-longreads/-/blob/main/golang/08-docker-images/project.md).
+`#study_project_CU` `#go`
+- [ENG]()
+- [RU]()
+
